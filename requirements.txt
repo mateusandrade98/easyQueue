@@ -1,6 +1,5 @@
 redis
 requests
 rq
-json
 gevent
 flask
