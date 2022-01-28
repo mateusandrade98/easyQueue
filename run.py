@@ -51,8 +51,21 @@ async def addToQueue(request: Request, token: str = ""):
     )
     return success({"Sender.Request": data})
 
+def startWorkerServer():
+    worker = getWorker.Worker()
+    from rq import Connection
+    from rq import Worker as WorkerModule
+    import sys
+
+    with Connection():
+        qs = sys.argv[1:] or ['default']
+        w = WorkerModule(qs, connection=worker.getConnection())
+        w.work()
+
+
 if __name__ == "__main__":
     print("HTTP Server Started...")
+    startWorkerServer()
     uvicorn.run(
         app,
         host=env.get("service_host"),
