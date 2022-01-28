@@ -5,7 +5,7 @@ class Request:
     def __init__(self):
         self.data = None
 
-    def run(self, data=dict):
+    async def run(self, data=dict):
         self.data = data
         if self.data:
             url = self.data["url"]
@@ -37,6 +37,6 @@ class Request:
             )
 
             try:
-                return response.json()
+                return await response.json()
             except json.JSONDecodeError:
                 return response.text
