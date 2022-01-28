@@ -5,6 +5,7 @@ import Sender
 from util import getEnvironment
 from util import getWorker
 from fastapi import FastAPI, Request
+import uvicorn
 
 env = getEnvironment.getEnvData()
 
@@ -52,3 +53,4 @@ async def addToQueue(request: Request, token: str = ""):
 
 if __name__ == "__main__":
     print("HTTP Server Started...")
+    uvicorn.run(app, host=env.get("service_host"), port=int(env.get("service_port")))
