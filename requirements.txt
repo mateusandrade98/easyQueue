@@ -1,6 +1,5 @@
 redis
 requests
 rq
-gevent
 fastapi
 uvicorn[standard]
