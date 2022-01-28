@@ -1,11 +1,9 @@
 import json
-import threading
 import redis
 from rq import Queue
 from rq import Retry
 import Sender
 from util import getEnvironment
-from gevent.pywsgi import WSGIServer
 from fastapi import FastAPI, Request
 
 env = getEnvironment.getEnvData()
