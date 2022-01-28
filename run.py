@@ -53,4 +53,4 @@ async def addToQueue(request: Request, token: str = ""):
 
 if __name__ == "__main__":
     print("HTTP Server Started...")
-    uvicorn.run(app, host=env.get("service_host"), port=int(env.get("service_port")))
+    uvicorn.run("run:app", host=env.get("service_host"), port=int(env.get("service_port")))
