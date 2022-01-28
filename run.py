@@ -6,26 +6,26 @@ from rq import Retry
 import Sender
 from util import getEnvironment
 from gevent.pywsgi import WSGIServer
-from flask import Flask, request, jsonify
+from fastapi import FastAPI, Request
 
 env = getEnvironment.getEnvData()
 
-app = Flask(__name__)
+app = FastAPI()
 app.debug = True
 
 
-def error(msg=str) -> jsonify:
-    return jsonify({
+def error(msg=str) -> json:
+    return {
         "success": 0,
         "msg": msg
-    })
+    }
 
 
-def success(data=dict):
-    return jsonify({
+def success(data=dict) -> json:
+    return {
         "success": 1,
         "data": data
-    })
+    }
 
 
 class Worker:
@@ -53,27 +53,19 @@ class Worker:
             w.work()
 
 
-@app.route("/test")
-def test():
-    return success({"result": "ok"})
-
-
-@app.route("/addToQueue", methods=["POST", "GET"])
-def addToQueue():
-    if request.method != "POST":
-        return error("This method is invalid.")
-
+@app.post("/addToQueue")
+async def addToQueue(request: Request, token: str = ""):
     if not request.json:
         return error("Send JSON type data.")
 
     try:
-        if request.args["token"] != env.get("token"):
+        if token != env.get("token"):
             return error("Token is invalid.")
     except KeyError as e:
         return error("KeyError {e}".format(e=e))
 
     try:
-        data = request.json
+        data = await request.json()
     except json.JSONDecoder as e:
         return error("JSONDecodeError {e}".format(e=e))
 
@@ -89,10 +81,13 @@ def addToQueue():
 
 def startHttpServer():
     print("HTTP Server Started...")
-    httpserver = WSGIServer((
-        env.get("service_host"),
-        int(env.get("service_port"))), app)
-    httpserver.serve_forever()
+    import uvicorn
+    uvicorn.run(
+        "run:app",
+        host=env.get("service_host"),
+        port=int(env.get("service_port")),
+        log_level="info"
+    )
 
 
 def startWorkerServer():
@@ -110,10 +105,5 @@ def startWorkerServer():
 
 if __name__ == "__main__":
     print("Server Started...")
-    http_server = WSGIServer((
-        env.get("service_host"),
-        int(env.get("service_port"))),
-        app
-    )
-    threading.Thread(target=startHttpServer, args=()).start()
+    startHttpServer()
     startWorkerServer()

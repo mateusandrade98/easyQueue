@@ -2,4 +2,5 @@ redis
 requests
 rq
 gevent
-flask
+fastapi
+uvicorn[standard]
