@@ -77,8 +77,9 @@ async def addToQueue(request: Request, token: str = ""):
     return success({"Sender.Request": data})
 
 
-def startHttpServer():
+def startServer():
     print("HTTP Server Started...")
+    startWorkerServer()
     import uvicorn
     uvicorn.run(
         "run:app",
@@ -103,5 +104,4 @@ def startWorkerServer():
 
 if __name__ == "__main__":
     print("Server Started...")
-    startHttpServer()
-    startWorkerServer()
+    startServer()
