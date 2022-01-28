@@ -1,9 +1,9 @@
 import json
-import redis
 from rq import Queue
 from rq import Retry
 import Sender
 from util import getEnvironment
+from util import getWorker
 from fastapi import FastAPI, Request
 
 env = getEnvironment.getEnvData()
@@ -25,32 +25,6 @@ def success(data=dict) -> json:
         "data": data
     }
 
-
-class Worker:
-    def __init__(self):
-        pass
-
-    def getConnection(self):
-        return redis.client.Redis(
-            host=env.get("redis_host"),
-            port=env.get("redis_port"),
-            db=env.get("redis_db"),
-            password=env.get("redis_password")
-        )
-
-    def start(self):
-        print("Wpp Worker Started....")
-        worker = Worker()
-        from rq import Connection
-        from rq import Worker as WorkerModule
-        import sys
-
-        with Connection():
-            qs = sys.argv[1:] or ['default']
-            w = WorkerModule(qs, connection=worker.getConnection())
-            w.work()
-
-
 @app.post("/addToQueue")
 async def addToQueue(request: Request, token: str = ""):
     if not request.json:
@@ -67,7 +41,7 @@ async def addToQueue(request: Request, token: str = ""):
     except json.JSONDecoder as e:
         return error("JSONDecodeError {e}".format(e=e))
 
-    worker = Worker()
+    worker = getWorker.Worker()
     q = Queue(connection=worker.getConnection())
     q.enqueue(
         Sender.Request().run,
@@ -78,8 +52,6 @@ async def addToQueue(request: Request, token: str = ""):
 
 
 def startServer():
-    print("HTTP Server Started...")
-    startWorkerServer()
     import uvicorn
     uvicorn.run(
         "run:app",
@@ -89,19 +61,6 @@ def startServer():
     )
 
 
-def startWorkerServer():
-    print("Worker Started....")
-    worker = Worker()
-    from rq import Connection
-    from rq import Worker as WorkerModule
-    import sys
-
-    with Connection():
-        qs = sys.argv[1:] or ['default']
-        w = WorkerModule(qs, connection=worker.getConnection())
-        w.work()
-
-
 if __name__ == "__main__":
-    print("Server Started...")
+    print("HTTP Server Started...")
     startServer()
