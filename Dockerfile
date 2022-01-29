@@ -3,5 +3,4 @@ WORKDIR /app
 COPY ./requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 COPY . /app
-RUN chmod +x start.sh
-CMD ["./start"]
+CMD ["python", "-u", "run.py"]
