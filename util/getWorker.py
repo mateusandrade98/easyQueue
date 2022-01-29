@@ -15,7 +15,7 @@ class Worker:
             password=env.get("redis_password")
         )
 
-    def start(self):
+    async def start(self):
         print("Wpp Worker Started....")
         worker = Worker()
         from rq import Connection
