@@ -67,9 +67,9 @@ def startWorkerServer():
 
 if __name__ == "__main__":
     print("HTTP Server Started...")
-    startWorkerServer()
     threading.Thread(uvicorn.run(
         app,
         host=env.get("service_host"),
         port=int(env.get("service_port"))
     )).start()
+    startWorkerServer()
