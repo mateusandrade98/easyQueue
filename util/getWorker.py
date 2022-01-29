@@ -15,14 +15,13 @@ class Worker:
             password=env.get("redis_password")
         )
 
-    async def start(self):
+    def start(self):
         print("Wpp Worker Started....")
-        worker = Worker()
         from rq import Connection
         from rq import Worker as WorkerModule
         import sys
 
         with Connection():
             qs = sys.argv[1:] or ['default']
-            w = WorkerModule(qs, connection=worker.getConnection())
+            w = WorkerModule(qs, connection=self.getConnection())
             w.work()
