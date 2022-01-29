@@ -12,8 +12,6 @@ env = getEnvironment.getEnvData()
 app = FastAPI()
 app.debug = True
 
-getWorker.Worker().start()
-
 def error(msg=str) -> json:
     return {
         "success": 0,
