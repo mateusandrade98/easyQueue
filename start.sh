@@ -1,2 +1,2 @@
-python -u run.py
 python -u worker.py
+python -u run.py
