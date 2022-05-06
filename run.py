@@ -1,29 +1,30 @@
-import json
-from rq import Queue
-from rq import Retry
-import Sender
-from util import getEnvironment
-from util import getWorker
+from datetime import timedelta
+from rq import Queue, Retry
+from util import getEnvironment, getWorker
 from fastapi import FastAPI, Request
+import Sender
 import uvicorn
+import json
 
 env = getEnvironment.getEnvData()
 
 app = FastAPI()
 app.debug = True
 
-def error(msg=str) -> json:
+
+def error(msg: str = "") -> json:
     return {
         "success": 0,
         "msg": msg
     }
 
 
-def success(data=dict) -> json:
+def success(data: dict = "") -> json:
     return {
         "success": 1,
         "data": data
     }
+
 
 @app.post("/addToQueue")
 async def addToQueue(request: Request, token: str = ""):
@@ -41,9 +42,14 @@ async def addToQueue(request: Request, token: str = ""):
     except json.JSONDecoder as e:
         return error("JSONDecodeError {e}".format(e=e))
 
+    delay = 0
+    if "delay" in data:
+        delay = float(data["delay"])
+
     worker = getWorker.Worker()
     q = Queue(connection=worker.getConnection())
-    q.enqueue(
+    q.enqueue_in(
+        timedelta(seconds=delay),
         Sender.Request().run,
         data,
         retry=Retry(max=3, interval=[10, 30, 60])
@@ -57,3 +63,4 @@ if __name__ == "__main__":
         host=env.get("service_host"),
         port=int(env.get("service_port"))
     )
+
