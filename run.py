@@ -49,7 +49,6 @@ async def addToQueue(request: Request, token: str = ""):
     worker = getWorker.Worker()
     q = Queue(connection=worker.getConnection())
     q.enqueue(
-        timedelta(seconds=delay),
         Sender.Request().run,
         data,
         retry=Retry(max=3, interval=[10, 30, 60])
