@@ -1,5 +1,6 @@
 from datetime import timedelta
 from rq import Queue, Retry
+from rq_scheduler import Scheduler
 from util import getEnvironment, getWorker
 from fastapi import FastAPI, Request
 import Sender
@@ -47,9 +48,16 @@ async def addToQueue(request: Request, token: str = ""):
         delay = float(data["delay"])
 
     worker = getWorker.Worker()
-    q = Queue(connection=worker.getConnection())
-    q.enqueue(
-        Sender.Request().run,
+    # q = Queue(connection=worker.getConnection())
+    # q.enqueue_in(
+    #     Sender.Request().run,
+    #     data,
+    #     retry=Retry(max=3, interval=[10, 30, 60])
+    # )
+    scheduler = Scheduler(connection=worker.getConnection())
+    scheduler.enqueue_in(
+        timedelta(seconds=0),
+        Sender.Request.run,
         data,
         retry=Retry(max=3, interval=[10, 30, 60])
     )
