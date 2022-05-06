@@ -4,3 +4,4 @@ rq
 rq-scheduler
 fastapi
 uvicorn[standard]
+python-dotenv

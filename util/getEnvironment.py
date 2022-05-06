@@ -1,4 +1,9 @@
+import os
+from dotenv import dotenv_values
+
+
 def getEnvData() -> dict:
-    with open(".env", 'r') as f:
-        return dict(tuple(line.replace('\n', '').split('=')) for line
-                    in f.readlines() if not line.startswith('#'))
+    Env = dotenv_values(".env")
+    if len(os.environ) > 0:
+        Env.update(os.environ)
+    return Env
