@@ -46,9 +46,6 @@ async def addToQueue(request: Request, token: str = ""):
     if "delay" in data:
         delay = float(data["delay"])
 
-    await Sender.Request().run(data=data)
-
-    return
 
     worker = getWorker.Worker()
     q = Queue(connection=worker.getConnection())

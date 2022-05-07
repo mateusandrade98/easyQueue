@@ -12,12 +12,12 @@ class Request:
             url = self.data["url"]
 
             if "redirect" in self.data:
-                response = requests.post(
+                requests.post(
                     url=url,
                     json=self.data
                 )
 
-                return 
+                return {"success": 1}
 
             try:
                 payload = self.data["payload"]
@@ -41,7 +41,7 @@ class Request:
             except KeyError:
                 params = {}
 
-            response = requests.request(
+            requests.request(
                 method=method,
                 url=url,
                 headers=headers,
@@ -49,7 +49,4 @@ class Request:
                 params=params
             )
 
-            try:
-                return await response.json()
-            except json.JSONDecodeError:
-                return response.text
+            return {"success": 1}
