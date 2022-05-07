@@ -11,12 +11,13 @@ class Request:
             url = self.data["url"]
 
             if "redirect" in self.data:
-                requests.post(
-                    url=url,
-                    json=self.data
-                )
+                pass
+            requests.post(
+                url=url,
+                json=self.data
+            )
 
-                return {"success": 1}
+            return {"success": 1}
 
             try:
                 payload = self.data["payload"]
