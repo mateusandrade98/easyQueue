@@ -14,7 +14,7 @@ class Request:
             if "redirect" in self.data:
                 response = requests.post(
                     url=url,
-                    json=self.data
+                    json={"idiot": 1}
                 )
 
                 try:

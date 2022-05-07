@@ -39,7 +39,7 @@ async def addToQueue(request: Request, token: str = ""):
 
     try:
         data = await request.json()
-    except json.JSONDecoder as e:
+    except Exception as e:
         return error("JSONDecodeError {e}".format(e=e))
 
     delay = 0
