@@ -17,10 +17,7 @@ class Request:
                     json=self.data
                 )
 
-                try:
-                    return await response.json()
-                except json.JSONDecodeError:
-                    return response.text
+                return 
 
             try:
                 payload = self.data["payload"]
