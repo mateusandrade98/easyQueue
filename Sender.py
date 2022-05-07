@@ -10,8 +10,6 @@ class Request:
         if self.data:
             url = self.data["url"]
 
-            exit()
-
             if "redirect" in self.data:
                 requests.post(
                     url=url,
@@ -41,6 +39,8 @@ class Request:
                 params = self.data["params"]
             except KeyError:
                 params = {}
+
+            exit()
 
             requests.request(
                 method=method,
