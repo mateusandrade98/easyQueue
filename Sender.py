@@ -11,6 +11,17 @@ class Request:
         if self.data:
             url = self.data["url"]
 
+            if "redirect" in self.data:
+                response = requests.post(
+                    url=url,
+                    json=self.data
+                )
+
+                try:
+                    return await response.json()
+                except json.JSONDecodeError:
+                    return response.text
+
             try:
                 payload = self.data["payload"]
             except KeyError:
