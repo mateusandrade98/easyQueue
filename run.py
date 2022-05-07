@@ -48,6 +48,8 @@ async def addToQueue(request: Request, token: str = ""):
 
     await Sender.Request().run(data=data)
 
+    return
+
     worker = getWorker.Worker()
     q = Queue(connection=worker.getConnection())
     q.enqueue_in(
