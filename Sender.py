@@ -7,9 +7,6 @@ class Request:
 
     async def run(self, data: dict = None):
         self.data = data
-
-        self.data = {}
-
         if self.data:
             url = self.data["url"]
 
